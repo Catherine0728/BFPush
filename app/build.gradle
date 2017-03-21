@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "com.example.catherine.myapplication"
+        minSdkVersion 18
+        targetSdkVersion 24
+
+
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a','x86'
+
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+
+    defaultConfig {
+        applicationId "com.example.catherine.myapplication"
+        minSdkVersion 17
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+repositories {
+//
+//    flatDir {
+//        dirs 'libs'
+//    }
+}
+
+dependencies {
+    //    compile(name: 'HMS-SDK-2.4.0.300', ext: 'aar')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
+    testCompile 'junit:junit:4.12'
+    compile files('libs/MiPush_SDK_Client_3_2_2.jar')
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile files('libs/hmssdk-product-support.jar')
+    compile files('libs/HwPush_SDK_V2705.jar')
+    compile files('libs/jcore-android_v1.1.1.jar')
+    compile files('libs/jpush-android_v3.0.3.jar')
+}
