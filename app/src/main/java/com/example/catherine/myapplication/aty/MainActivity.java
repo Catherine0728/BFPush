@@ -70,11 +70,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkPermission();
-        Push.setIPush(iPush);
-        Push.register(this, BuildConfig.DEBUG);
-
         ButterKnife.bind(this);
+        checkPermission();
+        Push.register(this, iPush);//采用通过灵敏度的注册方式来选择推送
         setListener();
     }
 

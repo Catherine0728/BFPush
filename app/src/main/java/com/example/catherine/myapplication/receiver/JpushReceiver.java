@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.catherine.myapplication.model.PushMessage;
 import com.example.catherine.myapplication.feature.IPush;
 import com.example.catherine.myapplication.utills.L;
+import com.example.catherine.myapplication.utills.RomUtil;
 import com.example.catherine.myapplication.utills.Target;
 
 import org.json.JSONException;
@@ -27,7 +28,7 @@ import cn.jpush.android.api.JPushInterface;
  * 2) 接收不到自定义消息
  */
 public class JpushReceiver extends BroadcastReceiver {
-    private static final String TAG = "JpushReceiver";
+    private static final String TAG = "JpushReceiver======";
     private static IPush iPush;
 
     public static void registerInterface(IPush iPush1) {
@@ -40,8 +41,10 @@ public class JpushReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        RomUtil.setReceiveMode(3);
+
         Bundle bundle = intent.getExtras();
-        L.line(TAG + " onReceive" + intent.getAction());
+        log(" onReceive", intent.getAction());
         L.lineModel(printBundle(bundle));
 
         int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
@@ -50,12 +53,13 @@ public class JpushReceiver extends BroadcastReceiver {
 
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
-            L.i(TAG + "接收Registration Id : " + regId);
-            if (iPush != null)
+            log("接收Registration Id : ", regId);
+            if (iPush != null) {
                 iPush.onRegister(context, regId);
+            }
 
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
-            L.i(TAG + " 接收到推送下来的自定义消息: " + extraMessage);
+            log(" 接收到推送下来的自定义消息: ", extraMessage);
             if (iPush != null) {
                 PushMessage message = new PushMessage();
                 message.setTitle(bundle.getString(JPushInterface.EXTRA_TITLE));
@@ -68,7 +72,7 @@ public class JpushReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
 
-            L.i(TAG + "接收到推送下来的通知的ID: " + notifactionId);
+            log("接收到推送下来的通知的ID: ", notifactionId + "");
             if (iPush != null) {
                 PushMessage message = new PushMessage();
                 message.setNotifyID(notifactionId);
@@ -104,6 +108,11 @@ public class JpushReceiver extends BroadcastReceiver {
         } else {
             L.i(TAG + " Unhandled intent - " + intent.getAction());
         }
+    }
+
+    private void log(String tag, String message) {
+        L.i(TAG + tag + message);
+
     }
 
     // 打印所有的 intent extra 数据

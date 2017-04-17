@@ -10,6 +10,7 @@ import com.example.catherine.myapplication.aty.MyApplication;
 import com.example.catherine.myapplication.model.PushMessage;
 import com.example.catherine.myapplication.utills.JHandler;
 import com.example.catherine.myapplication.utills.L;
+import com.example.catherine.myapplication.utills.RomUtil;
 import com.example.catherine.myapplication.utills.Target;
 import com.huawei.android.pushagent.PushReceiver;
 
@@ -40,7 +41,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
     public void onToken(final Context context, final String token, Bundle extras) {
         final String belongId = extras.getString("belongId");
         String content = "获取token和belongId成功，token = " + token + ",belongId = " + belongId;
-        L.i(TAG + content);
+        log("onToken==", content);
         mToken = token;
         if (mIPush != null) {
             JHandler.handler().post(new Runnable() {
@@ -58,6 +59,10 @@ public class EMHuaweiPushReceiver extends PushReceiver {
         L.i(TAG + "onPushMsg...");
     }
 
+    private void log(String tag, String message) {
+        L.i(TAG + tag + message);
+
+    }
 
     /**
      * @param context
@@ -67,8 +72,9 @@ public class EMHuaweiPushReceiver extends PushReceiver {
      */
     @Override
     public boolean onPushMsg(final Context context, byte[] msg, Bundle bundle) {
+        RomUtil.setReceiveMode(0);
         //这里是透传消息， msg是透传消息的字节数组 bundle字段没用
-        L.i(TAG + "onPushMsg: " + msg.toString());
+        log("onPushMsg: ", msg.toString());
         try {
             String content = new String(msg, "UTF-8");
             if (mIPush != null) {
@@ -84,7 +90,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                     }
                 });
             }
-            L.i(content);
+            log("onPushMsg", content);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,7 +110,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
      * @param extras
      */
     public void onEvent(final Context context, Event event, Bundle extras) {
-        L.i(TAG + "onEvent: " + extras);
+        log("onEvent: ", extras.toString());
 
         if (Event.NOTIFICATION_OPENED.equals(event) || Event.NOTIFICATION_CLICK_BTN.equals(event)) {
             int notifyId = extras.getInt(BOUND_KEY.pushNotifyId, 0);
@@ -124,7 +130,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                 });
             }
 
-            L.i(content);
+            log("onEveny", content);
         } else if (Event.PLUGINRSP.equals(event)) {
             final int TYPE_LBS = 1;
             final int TYPE_TAG = 2;
@@ -145,7 +151,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                 }
 
             }
-            L.i(message + isSuccess);
+            log("onEvent", message + isSuccess);
             super.onEvent(context, event, extras);
         }
     }
@@ -163,7 +169,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
     public void onPushState(Context context, boolean pushState) {
         try {
             String content = "查询push通道状态： " + (pushState ? "已连接" : "未连接");
-            L.i(TAG + "onPushState" + content);
+            log("onPushState", content);
             mIPush.onLog(context, content);
 
         } catch (Exception e) {

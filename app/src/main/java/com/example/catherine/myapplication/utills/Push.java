@@ -48,7 +48,7 @@ public class Push {
      *
      * @param context
      * @param debug
-     * @param IPush
+     * @param IPush   根据机型来判断的注册方式
      */
     public static void register(Context context, boolean debug, IPush IPush) {
         if (context == null)
@@ -58,10 +58,7 @@ public class Push {
                 EMHuaweiPushReceiver.registerInterface(IPush);
             }
             PushManager.requestToken(context);
-            return;
-
-        }
-        if (RomUtil.rom() == Target.MIUI) {
+        } else if (RomUtil.rom() == Target.MIUI) {
             if (IPush != null) {
                 MIUIMessageReceiver.registerInterface(IPush);
             }
@@ -88,9 +85,7 @@ public class Push {
                 Logger.setLogger(context, newLogger);
             }
 
-            return;
-        }
-        if (RomUtil.rom() == Target.JPUSH) {
+        } else if (RomUtil.rom() == Target.JPUSH) {
             if (IPush != null) {
                 JpushReceiver.registerInterface(IPush);
             }
@@ -98,8 +93,51 @@ public class Push {
             JPushInterface.setDebugMode(debug);
             String rid = JPushInterface.getRegistrationID(context);
             L.line(rid);
-            return;
         }
+
+
+    }
+
+    /**
+     * 注册
+     *
+     * @param context
+     * @param IPush   根据接受推送的灵敏度来注册这些推送，所以首先应该全部注册
+     */
+    public static void register(Context context, IPush IPush) {
+        if (context == null)
+            return;
+        if (IPush != null) {
+            EMHuaweiPushReceiver.registerInterface(IPush);
+            MIUIMessageReceiver.registerInterface(IPush);
+            JpushReceiver.registerInterface(IPush);
+
+        }
+        PushManager.requestToken(context);
+        if (shouldInit(context)) {
+            MiPushClient.registerPush(context, Const.APP_ID, Const.APP_KEY);
+        }
+        LoggerInterface newLogger = new LoggerInterface() {
+            @Override
+            public void setTag(String tag) {
+                // ignore
+            }
+
+            @Override
+            public void log(String content, Throwable t) {
+                L.i("content" + content + " exception: " + t.toString());
+            }
+
+            @Override
+            public void log(String content) {
+                L.i("miui: " + content);
+            }
+        };
+        Logger.setLogger(context, newLogger);
+        JPushInterface.init(context);
+        JPushInterface.setDebugMode(true);// TODO: 17/4/17 设置debug模式默认为true
+        String rid = JPushInterface.getRegistrationID(context);
+        L.line(rid);
 
 
     }

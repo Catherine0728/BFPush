@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="hmssdk-product-support">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/hmssdk-product-support.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

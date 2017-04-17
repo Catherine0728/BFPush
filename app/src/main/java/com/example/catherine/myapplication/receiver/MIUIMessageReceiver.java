@@ -2,13 +2,10 @@ package com.example.catherine.myapplication.receiver;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.example.catherine.myapplication.feature.IPush;
 import com.example.catherine.myapplication.aty.MainActivity;
-import com.example.catherine.myapplication.aty.MyApplication;
 import com.example.catherine.myapplication.R;
 import com.example.catherine.myapplication.model.PushMessage;
 import com.example.catherine.myapplication.utills.JHandler;
@@ -67,6 +64,7 @@ public class MIUIMessageReceiver extends PushMessageReceiver {
      */
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
+        RomUtil.setReceiveMode(1);
         mMessage = message.getContent();
         log("onReceivePassThroughMessage ", message.toString());
         MainActivity.logList.add(0, getSimpleDate() + " " + mMessage);
@@ -109,6 +107,7 @@ public class MIUIMessageReceiver extends PushMessageReceiver {
      */
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
+        RomUtil.setReceiveMode(1);
         mMessage = message.getContent();
         log("onNotificationMessageArrived ", message.toString());
         MainActivity.logList.add(0, getSimpleDate() + " " + mMessage);

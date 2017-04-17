@@ -3,6 +3,7 @@ package com.example.catherine.myapplication.utills;
 import com.example.catherine.myapplication.model.BuildProperties;
 
 import java.io.IOException;
+import java.util.Random;
 
 
 /**
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 public class RomUtil {
     private static Target mTarget = null;
+    private static int receiveMode = -1;//设置一个变量来表示最快接受到信息的是哪一种推送方式。
     private static final String KEY_EMUI_VERSION_CODE = "ro.build.version.emui";
     private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
     private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
@@ -73,25 +75,61 @@ public class RomUtil {
     }
 
 
+    /**
+     * 根据机型来判断当前应该用哪一种rom
+     */
     public static Target rom() {
-        if (mTarget != null)
-            return mTarget;
+        if (RomUtil.receiveMode != -1) {
+            switch (RomUtil.receiveMode) {
+                /**
+                 * 0:华为
+                 * 1:小米
+                 * 2:魅族
+                 * 3:极光
+                 * */
+                case 0://华为
+                    mTarget = Target.EMUI;
+                    break;
+                case 1://小米
+                    mTarget = Target.MIUI;
+                    break;
+                case 2://魅族
+                    mTarget = Target.FLYME;
+                    break;
+                case 3://极光
+                    mTarget = Target.JPUSH;
+                    break;
+            }
+        } else {
+            if (mTarget != null)
+                return mTarget;
 
-        if (isEMUI()) {
-            mTarget = Target.EMUI;
-            return mTarget;
-        }
-        if (isMIUI()) {
-            mTarget = Target.MIUI;
-            return mTarget;
-        }
-        if (isFlyme()) {
-            mTarget = Target.FLYME;
-            return mTarget;
-        }
+            if (isEMUI()) {
+                mTarget = Target.EMUI;
+                return mTarget;
+            }
+            if (isMIUI()) {
+                mTarget = Target.MIUI;
+                return mTarget;
+            }
+            if (isFlyme()) {
+                mTarget = Target.FLYME;
+                return mTarget;
+            }
+            mTarget = Target.JPUSH;
 
-        mTarget = Target.JPUSH;
+        }
         return mTarget;
+
+    }
+
+    /**
+     * 得到当前的最快接受推送方式
+     */
+    public static void setReceiveMode(int receiveMode) {
+        System.out.println("RomUtil.receiveMode===>" + RomUtil.receiveMode + "===" + receiveMode);
+        if (RomUtil.receiveMode != -1) return;
+        RomUtil.receiveMode = receiveMode;
     }
 
 }
